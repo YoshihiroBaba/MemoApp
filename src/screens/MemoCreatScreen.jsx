@@ -1,21 +1,48 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View, TextInput, StyleSheet,
 } from 'react-native';
+
+import firebase from 'firebase';
 
 import CircleButton from '../components/CircleButton';
 import KeyboardSafeView from '../components/KeyboardSafeView';
 
 export default function MemoCreateScreen(props) {
   const { navigation } = props;
+  const [bodyText, setBodyText] = useState(''); //メモの新規作成
+
+  function handlePress() {
+    const { currentUser } = firebase.auth();
+    const db = firebase.firestore();
+    const ref = db.collection(`users/${currentUser.uid}/memos`); //ユーザーごとのメモを作成することができる
+    ref.add({
+      bodyText, //bodyText: bodyText,の意
+      updatedAt: new Date(), //更新日を記録
+    })
+      .then((docRef) => {
+        console.log('Created!', docRef.id);
+        navigation.goBack();
+      })
+      .catch((error) => {
+        console.log('Error!', error);
+      });
+  }
+
   return (
     <KeyboardSafeView style={styles.container} behavior="height">
       <View style={styles.inputContainer}>
-        <TextInput value="" multiline style={styles.input} />
+        <TextInput
+          value={bodyText}
+          multiline
+          style={styles.input}
+          onChangeText={(text) => { setBodyText(text); }}
+          autoFocus
+        />
       </View>
       <CircleButton
         name="check"
-        onPress={() => { navigation.goBack(); }}
+        onPress={handlePress}
       />
     </KeyboardSafeView>
   );
