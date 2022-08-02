@@ -10,15 +10,15 @@ import KeyboardSafeView from '../components/KeyboardSafeView';
 
 export default function MemoCreateScreen(props) {
   const { navigation } = props;
-  const [bodyText, setBodyText] = useState(''); //メモの新規作成
+  const [bodyText, setBodyText] = useState('');
 
   function handlePress() {
     const { currentUser } = firebase.auth();
     const db = firebase.firestore();
-    const ref = db.collection(`users/${currentUser.uid}/memos`); //ユーザーごとのメモを作成することができる
+    const ref = db.collection(`users/${currentUser.uid}/memos`);
     ref.add({
-      bodyText, //bodyText: bodyText,の意
-      updatedAt: new Date(), //更新日を記録
+      bodyText,
+      updatedAt: new Date(),
     })
       .then((docRef) => {
         console.log('Created!', docRef.id);
