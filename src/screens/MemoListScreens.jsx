@@ -26,11 +26,10 @@ export default function MemoListScreens(props) {
     let unsubscribe = () => {};
     if (currentUser) {
       setLoading(true);
-      const ref = db.collection(`users/${currentUser.uid}/memos`).orderBy('updatedAt', 'desc'); //降順に並び替えする。ascと入れると逆になる
+      const ref = db.collection(`users/${currentUser.uid}/memos`).orderBy('updatedAt', 'desc');
       unsubscribe = ref.onSnapshot((snapshot) => {
         const userMemos = [];
         snapshot.forEach((doc) => {
-          console.log(doc.id, doc.data());
           const data = doc.data();
           userMemos.push({
             id: doc.id,
@@ -40,10 +39,9 @@ export default function MemoListScreens(props) {
         });
         setMemos(userMemos);
         setLoading(false);
-      }, (error) => {
-        console.log(error);
+      }, () => {
         setLoading(false);
-        Alert.alert('データの読み込みに失敗しました');
+        Alert.alert('データの読み込みに失敗しました。');
       });
     }
     return unsubscribe;

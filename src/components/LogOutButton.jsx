@@ -34,6 +34,6 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 14,
-    color: "rgba(255,255, 255, 0.7)",
+    color: 'rgba(255,255, 255, 0.7)',
   },
 });

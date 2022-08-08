@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   View, Text, TextInput, StyleSheet, TouchableOpacity, Alert,
 } from 'react-native';
@@ -14,29 +14,27 @@ export default function SignUpScreen(props) {
   const [password, setPassword] = useState('');
   const [isLoading, setLoading] = useState(false);
 
-  function handlePress() {
+  const handlePress = useCallback(() => {
     setLoading(true);
     firebase.auth().createUserWithEmailAndPassword(email, password)
-      .then((userCredential) => {
-        const { user } = userCredential;
-        console.log(user.uid);
+      .then(() => {
         navigation.reset({
           index: 0,
           routes: [{ name: 'MemoList' }],
         });
       })
       .catch((error) => {
-        console.log(error.code, error.message);
         const errorMsg = translateErrors(error.code);
         Alert.alert(errorMsg.title, errorMsg.description);
       })
       .then(() => {
         setLoading(false);
       });
-  }
+  }, [email, password]);
 
   return (
     <View style={styles.container}>
+      <Loading isLoading={isLoading} />
       <View style={styles.inner}>
         <Text style={styles.title}>Sign Up</Text>
         <TextInput
@@ -67,7 +65,7 @@ export default function SignUpScreen(props) {
             onPress={() => {
               navigation.reset({
                 index: 0,
-                routes: [{ name: 'Login' }],
+                routes: [{ name: 'LogIn' }],
               });
             }}
           >
